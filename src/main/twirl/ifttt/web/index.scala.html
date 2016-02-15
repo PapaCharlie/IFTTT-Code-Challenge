@@ -1,0 +1,131 @@
+@import ifttt.Team
+@import ifttt.Schedule
+@(teams: List[Team], schedules: List[Schedule] = List())
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="IFTTT 1 + 1 Tool">
+        <meta name="author" content="Paul Chesnais">
+
+        <title>IFTTT 1 + 1 Tool</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    </head>
+
+    <body>
+        <div class="jumbotron">
+            <div class="container">
+                <div class="row">
+                    <div class="text-center col-md-offset-3 col-md-6">
+                        <h2>The Teams</h2>
+                        <form name="addTeam" role="form" method="post" action="add/team">
+                            <div class="input-group md-col-12 input-large">
+                                <input id="name" type="text" name="team" class="form-control" placeholder="Team name" required/><span class="input-group-btn"/>
+                                <button type="submit" class="btn btn-primary">Create Team</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    @for(team <- teams) {
+                        <div class="col-md-4">
+                            <h3>@team.name</h3>
+                            <form name="addUser" role="form" method="post" action="add/member/@team.name" class="form-inline">
+                                <div class="input-group">
+                                    <input id="email" type="email" name="email" class="form-control" placeholder="Member email" required/> <span class="input-group-btn"/>
+                                    <button type="submit" class="btn btn-default">Add member</button>
+                                </div>
+                            </form>
+                            <form name="deleteMembers" role="form" method="post" action="delete/member/@team.name">
+                                <div class="form-group">
+                                    <select multiple id="members" name="members" class="form-control" required>
+                                    @for(member <- team.members) {
+                                        <option>@member</option>
+                                    }
+                                    </select>
+                                    <button type="submit" class="btn btn-warning">Delete Member</button>
+                                </div>
+                            </form>
+                            <form name="deleteTeam" role="form" method="post" action="delete/team/@team.name">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-danger">Delete Team</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="text-center col-md-offset-4 col-md-4">
+                        <h2>Schedules</h2>
+                        <form name="addTeam" role="form" method="post" action="schedules">
+                            <div class="input-group input-large">
+                                <input id="weeks" type="number" name="weeks" class="form-control" value="1" min="1" required/><span class="input-group-btn"/>
+                                <button type="submit" class="btn btn-primary">Make schedules</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                @for(week <- 1 to schedules.length) {
+                    @defining(schedules(week - 1)) { schedule =>
+                        <h3>Week @week</h3>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Teammate pairings</div>
+                            <table class="table table-bordered table-condensed table-hover">
+                            <col width="50%">
+                            <col width="50%">
+                            <thead>
+                                <tr>
+                                    <th>One</th>
+                                    <th>Plus one</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @for((one, plusone) <- schedule.pairs) {
+                                <tr>
+                                    <td>@one</td>
+                                    <td>@plusone</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                            </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Unmatched employees</div>
+                            <div class="panel-body">
+                                <ul class="unmatched list-unstyled">
+                                @for(employee <- schedule.unmatchedEmployees) {
+                                    <li>@employee</li>
+                                }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+            </div>
+        </div>
+    </body>
+    <style>
+        .table {
+            background-color:#FFFFFF ;
+        }
+        .unmatched {
+            background-color:#FFFFFF ;
+            height: 100px ;
+            overflow-y: scroll ;
+        }
+    </style>
+
+</html>
+
