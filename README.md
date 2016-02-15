@@ -1,5 +1,5 @@
 #HOWTO
-First, install [sbt](http://www.scala-sbt.org/0.13/docs/Setup.html). Then, in the root directory, simply run `sbt run` to start the tool, and go to [localhost:8080]() to interact with it.
+First, run `make install` to install a local version of sbt if it's not already installed, or go to [sbt](http://www.scala-sbt.org/0.13/docs/Setup.html) to install it globally. Then, in the root directory, simply run `make run` to start the tool, and go to [localhost:8080]() to interact with it.
 
 To create a new team, enter the team name in the topmost field, and press enter or hit the "Create Team" button. Then add individual members to each team using their respective fields. Delete members one by one by selecting them in the list and hitting the "Delete Member" button. Finally, delete a team by clicking its "Delete Team" button.
 
